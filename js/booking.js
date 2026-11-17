@@ -17,7 +17,6 @@ function parseDate(str) {
     if (!match) return null;
     const [, day, month, year] = match;
     const date = new Date(year, month - 1, day);
-    // Проверяем что дата корректная
     if (date.getDate() != day || date.getMonth() != month - 1 || date.getFullYear() != year) {
         return null;
     }
@@ -33,6 +32,48 @@ function checkAvailability(roomId, checkIn, checkOut) {
         new Date(b.checkIn) < checkOut && 
         new Date(b.checkOut) > checkIn
     );
+}
+
+// ===== АВТОФОРМАТИРОВАНИЕ ТЕЛЕФОНА =====
+function formatPhone(value) {
+    // Оставляем только цифры
+    let digits = value.replace(/\D/g, '');
+
+    // Если начинается с 8, заменяем на 7
+    if (digits.startsWith('8')) {
+        digits = '7' + digits.slice(1);
+    }
+
+    // Если не начинается с 7, добавляем 7 в начало
+    if (!digits.startsWith('7') && digits.length > 0) {
+        digits = '7' + digits;
+    }
+
+    // Ограничиваем до 11 цифр (7 + 10 цифр номера)
+    digits = digits.slice(0, 11);
+
+    // Форматируем по маске +7(XXX)XXX-XX-XX
+    let result = '';
+    if (digits.length === 0) return '';
+
+    result = '+7';
+    if (digits.length > 1) {
+        result += '(' + digits.slice(1, 4);
+    }
+    if (digits.length >= 4) {
+        result += ')';
+    }
+    if (digits.length >= 5) {
+        result += digits.slice(4, 7);
+    }
+    if (digits.length >= 8) {
+        result += '-' + digits.slice(7, 9);
+    }
+    if (digits.length >= 10) {
+        result += '-' + digits.slice(9, 11);
+    }
+
+    return result;
 }
 
 // Инициализация при загрузке
@@ -53,6 +94,54 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         roomInfoDiv.innerHTML = '<p>Номер не выбран. <a href="catalog.html">Вернуться в каталог</a></p>';
     }
+
+    // ===== Маска для телефона =====
+    const phoneInput = document.getElementById('phone');
+    
+    // Устанавливаем начальное значение
+    phoneInput.value = '+7(';
+
+    // Обработчик ввода
+    phoneInput.addEventListener('input', function(e) {
+        const cursorPos = this.selectionStart;
+        const oldValue = this.value;
+        const newValue = formatPhone(this.value);
+        
+        this.value = newValue;
+        
+        // Если поле пустое — ставим +7(
+        if (newValue === '') {
+            this.value = '+7(';
+        }
+    });
+
+    // Запрещаем удалять +7( в начале
+    phoneInput.addEventListener('keydown', function(e) {
+        // Backspace
+        if (e.key === 'Backspace') {
+            const cursorPos = this.selectionStart;
+            if (cursorPos <= 3) { // позиция до или в "+7("
+                e.preventDefault();
+            }
+        }
+    });
+
+    // При потере фокуса — если номер неполный, очищаем
+    phoneInput.addEventListener('blur', function() {
+        const digits = this.value.replace(/\D/g, '');
+        if (digits.length < 11 && digits.length > 0) {
+            this.value = '';
+        } else if (digits.length === 0) {
+            this.value = '';
+        }
+    });
+
+    // При получении фокуса — если пусто, ставим +7(
+    phoneInput.addEventListener('focus', function() {
+        if (this.value === '') {
+            this.value = '+7(';
+        }
+    });
 
     // Обработка формы
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
@@ -84,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Телефон +7(ХХХ)ХХХ-ХХ-ХХ
         if (!/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(phone)) {
-            document.getElementById('err-phone').textContent = 'Формат: +7(ХХХ)ХХХ-ХХ-ХХ';
+            document.getElementById('err-phone').textContent = 'Заполните номер полностью';
             hasError = true;
         }
 
@@ -141,5 +230,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Очистка формы
         this.reset();
+        phoneInput.value = '+7(';
     });
 });
