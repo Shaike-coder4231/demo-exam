@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог — Сладкие сны</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div>
+                <h1 class="logo">Сладкие сны</h1>
+                <p class="slogan">Ваш уют — наша забота</p>
+            </div>
+            <nav>
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="admin-login.html">Админ</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="catalog">
+            <div class="container">
+                <h2>Каталог номеров</h2>
+
+                <!-- Фильтр -->
+                <div class="filter-form">
+                    <label>Категория:
+                        <select id="filterCategory">
+                            <option value="">Все</option>
+                            <option value="Стандартный">Стандартный</option>
+                            <option value="Студия">Студия</option>
+                            <option value="Люкс">Люкс</option>
+                        </select>
+                    </label>
+                    <button class="btn btn-primary" onclick="applyFilter()">Применить</button>
+                    <button class="btn btn-secondary" onclick="resetFilter()">Сбросить фильтр</button>
+                </div>
+
+                <!-- Список номеров -->
+                <div class="rooms-grid" id="roomsGrid"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>📍 г. Москва, ул. Примерная, 15</p>
+            <p>🕐 Круглосуточно, 24/7</p>
+            <p>📞 +7 (495) 111-22-33</p>
+            <p>✉ info@sweetdreams.ru</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/catalog.js"></script>
+</body>
+</html>
