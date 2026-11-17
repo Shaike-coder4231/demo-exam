@@ -13,23 +13,49 @@ function showMessage(text, isSuccess) {
 
 // ===== ФОРМАТИРОВАНИЕ ТЕЛЕФОНА =====
 function formatPhone(value) {
+    // Берём только цифры
     let digits = value.replace(/\D/g, '');
-    if (digits.startsWith('8')) digits = '7' + digits.slice(1);
-    if (!digits.startsWith('7') && digits.length > 0) digits = '7' + digits;
+
+    // Если начинается с 8 → меняем на 7
+    if (digits.startsWith('8')) {
+        digits = '7' + digits.slice(1);
+    }
+
+    // Если не начинается с 7 → добавляем 7
+    if (digits.length > 0 && !digits.startsWith('7')) {
+        digits = '7' + digits;
+    }
+
+    // Ограничиваем 11 цифрами
     digits = digits.slice(0, 11);
 
+    // Если пусто — возвращаем пустую строку
+    if (digits.length === 0) return '';
+
+    // Форматируем
     let result = '+7';
-    if (digits.length > 1) result += '(' + digits.slice(1, 4);
-    if (digits.length >= 4) result += ')';
-    if (digits.length >= 5) result += digits.slice(4, 7);
-    if (digits.length >= 8) result += '-' + digits.slice(7, 9);
-    if (digits.length >= 10) result += '-' + digits.slice(9, 11);
+
+    if (digits.length > 1) {
+        result += '(' + digits.slice(1, 4);
+    }
+    if (digits.length >= 4) {
+        result += ')';
+    }
+    if (digits.length >= 5) {
+        result += digits.slice(4, 7);
+    }
+    if (digits.length >= 8) {
+        result += '-' + digits.slice(7, 9);
+    }
+    if (digits.length >= 10) {
+        result += '-' + digits.slice(9, 11);
+    }
+
     return result;
 }
 
 // ===== ФОРМАТИРОВАНИЕ ДАТЫ ДД.ММ.ГГГГ =====
 function formatDate(value) {
-    // Оставляем только цифры
     let digits = value.replace(/\D/g, '').slice(0, 8);
     let result = '';
 
@@ -40,7 +66,7 @@ function formatDate(value) {
     return result;
 }
 
-// Парсинг даты ДД.ММ.ГГГГ
+// Парсинг ДД.ММ.ГГГГ → Date
 function parseDate(str) {
     const match = str.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
     if (!match) return null;
@@ -52,29 +78,25 @@ function parseDate(str) {
     return date;
 }
 
-// Конвертация ДД.ММ.ГГГГ → YYYY-MM-DD (для input type="date")
+// ДД.ММ.ГГГГ → YYYY-MM-DD
 function toIsoDate(str) {
     const d = parseDate(str);
     if (!d) return '';
-    return d.toISOString().split('T')[0];
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
 }
 
-// Конвертация YYYY-MM-DD → ДД.ММ.ГГГГ
+// YYYY-MM-DD → ДД.ММ.ГГГГ
 function fromIsoDate(iso) {
     if (!iso) return '';
-    const [y, m, d] = iso.split('-');
-    return `${d}.${m}.${y}`;
+    const parts = iso.split('-');
+    if (parts.length !== 3) return '';
+    return `${parts[2]}.${parts[1]}.${parts[0]}`;
 }
 
-// Открыть нативный календарь
-function openPicker(pickerId) {
-    const picker = document.getElementById(pickerId);
-    // Хак для открытия нативного date picker
-    picker.showPicker?.() || picker.focus();
-    picker.click();
-}
-
-// Проверка пересечения дат
+// Проверка занятости номера
 function checkAvailability(roomId, checkIn, checkOut) {
     const bookings = getBookings();
     return !bookings.some(b =>
@@ -105,83 +127,65 @@ document.addEventListener('DOMContentLoaded', function() {
         roomInfoDiv.innerHTML = '<p>Номер не выбран. <a href="catalog.html">Вернуться в каталог</a></p>';
     }
 
-    // ===== МАСКА ТЕЛЕФОНА =====
+    // ===== ЭЛЕМЕНТЫ =====
     const phoneInput = document.getElementById('phone');
-    phoneInput.value = '+7(';
+    const checkInInput = document.getElementById('checkIn');
+    const checkOutInput = document.getElementById('checkOut');
+    const checkInPicker = document.getElementById('checkInPicker');
+    const checkOutPicker = document.getElementById('checkOutPicker');
 
+    // Минимальная дата — сегодня
+    const today = new Date();
+    const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    checkInPicker.min = todayIso;
+    checkOutPicker.min = todayIso;
+
+    // ===== ТЕЛЕФОН =====
     phoneInput.addEventListener('input', function() {
-        this.value = formatPhone(this.value) || '+7(';
-    });
-
-    phoneInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace' && this.selectionStart <= 3) {
-            e.preventDefault();
-        }
+        const formatted = formatPhone(this.value);
+        this.value = formatted;
     });
 
     phoneInput.addEventListener('focus', function() {
-        if (this.value === '') this.value = '+7(';
+        if (this.value === '') {
+            this.value = '+7(';
+        }
     });
 
     phoneInput.addEventListener('blur', function() {
         const digits = this.value.replace(/\D/g, '');
-        if (digits.length < 11) this.value = '';
+        if (digits.length <= 1) {
+            this.value = '';
+        }
     });
 
-    // ===== МАСКА ДАТЫ ЗАЕЗДА =====
-    const checkInInput = document.getElementById('checkIn');
-    const checkInPicker = document.getElementById('checkInPicker');
-    const checkOutInput = document.getElementById('checkOut');
-    const checkOutPicker = document.getElementById('checkOutPicker');
-
-    // Устанавливаем минимальную дату (сегодня)
-    const today = new Date();
-    const todayIso = today.toISOString().split('T')[0];
-    checkInPicker.min = todayIso;
-    checkOutPicker.min = todayIso;
-
-    // Автоформатирование при вводе
+    // ===== ДАТА ЗАЕЗДА =====
     checkInInput.addEventListener('input', function() {
         this.value = formatDate(this.value);
+
         // Синхронизация с календарём
         const iso = toIsoDate(this.value);
         if (iso) {
             checkInPicker.value = iso;
-            // Обновляем min для даты выезда
+            // Обновляем минимальную дату выезда
             checkOutPicker.min = iso;
         }
     });
 
-    checkOutInput.addEventListener('input', function() {
-        this.value = formatDate(this.value);
-        const iso = toIsoDate(this.value);
-        if (iso) checkOutPicker.value = iso;
-    });
-
-    // При выборе в календаре — обновляем текстовое поле
-    checkInPicker.addEventListener('change', function() {
-        const formatted = fromIsoDate(this.value);
-        checkInInput.value = formatted;
-        // Обновляем min для выезда
-        if (this.value) {
-            checkOutPicker.min = this.value;
-            // Если дата выезда раньше заезда — очищаем её
-            if (checkOutPicker.value && checkOutPicker.value <= this.value) {
-                checkOutInput.value = '';
-                checkOutPicker.value = '';
-            }
-        }
-    });
-
-    checkOutPicker.addEventListener('change', function() {
-        checkOutInput.value = fromIsoDate(this.value);
-    });
-
-    // При потере фокуса — очищаем неполные даты
     checkInInput.addEventListener('blur', function() {
         if (this.value.length > 0 && this.value.length < 10) {
             this.value = '';
             checkInPicker.value = '';
+        }
+    });
+
+    // ===== ДАТА ВЫЕЗДА =====
+    checkOutInput.addEventListener('input', function() {
+        this.value = formatDate(this.value);
+
+        const iso = toIsoDate(this.value);
+        if (iso) {
+            checkOutPicker.value = iso;
         }
     });
 
@@ -192,41 +196,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // ===== КАЛЕНДАРЬ ЗАЕЗДА =====
+    checkInPicker.addEventListener('change', function() {
+        if (this.value) {
+            checkInInput.value = fromIsoDate(this.value);
+            // Обновляем мин. дату выезда
+            checkOutPicker.min = this.value;
+
+            // Если выезд раньше заезда — очищаем выезд
+            if (checkOutPicker.value && checkOutPicker.value <= this.value) {
+                checkOutInput.value = '';
+                checkOutPicker.value = '';
+            }
+        }
+    });
+
+    // ===== КАЛЕНДАРЬ ВЫЕЗДА =====
+    checkOutPicker.addEventListener('change', function() {
+        if (this.value) {
+            checkOutInput.value = fromIsoDate(this.value);
+        }
+    });
+
     // ===== ОТПРАВКА ФОРМЫ =====
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
+        // Очистка ошибок
         document.querySelectorAll('.error').forEach(el => el.textContent = '');
 
         const firstName = document.getElementById('firstName').value.trim();
         const lastName = document.getElementById('lastName').value.trim();
-        const phone = document.getElementById('phone').value.trim();
+        const phone = phoneInput.value.trim();
         const email = document.getElementById('email').value.trim();
         const checkInStr = checkInInput.value.trim();
         const checkOutStr = checkOutInput.value.trim();
 
         let hasError = false;
 
+        // Имя
         if (!/^[А-Яа-яЁё\s.\-]+$/.test(firstName) || firstName.length < 2) {
             document.getElementById('err-firstName').textContent = 'Только кириллица, мин. 2 символа';
             hasError = true;
         }
 
+        // Фамилия
         if (!/^[А-Яа-яЁё\s.\-]+$/.test(lastName) || lastName.length < 2) {
             document.getElementById('err-lastName').textContent = 'Только кириллица, мин. 2 символа';
             hasError = true;
         }
 
+        // Телефон
         if (!/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(phone)) {
             document.getElementById('err-phone').textContent = 'Заполните номер полностью';
             hasError = true;
         }
 
+        // Email
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             document.getElementById('err-email').textContent = 'Неверный формат e-mail';
             hasError = true;
         }
 
+        // Даты
         const checkIn = parseDate(checkInStr);
         const checkOut = parseDate(checkOutStr);
         const todayDate = new Date();
@@ -250,12 +282,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (hasError) return;
 
+        // Проверка занятости
         const roomIdVal = parseInt(document.getElementById('roomId').value);
         if (roomIdVal && !checkAvailability(roomIdVal, checkIn, checkOut)) {
             showMessage('❌ Номер занят в этот период. Выберите другие даты.', false);
             return;
         }
 
+        // Сохранение
         addBooking({
             roomId: roomIdVal,
             firstName, lastName, phone, email,
@@ -264,8 +298,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         showMessage('✅ Заявка успешно отправлена!', true);
+
+        // Сброс формы
         this.reset();
-        phoneInput.value = '+7(';
         checkInPicker.value = '';
         checkOutPicker.value = '';
         checkOutPicker.min = todayIso;
