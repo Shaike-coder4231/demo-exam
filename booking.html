@@ -46,7 +46,7 @@
 
                     <div class="form-group">
                         <label for="phone">Телефон *</label>
-                        <input type="tel" id="phone" name="phone" placeholder="+7(XXX)XXX-XX-XX">
+                        <input type="text" id="phone" name="phone" placeholder="+7(XXX)XXX-XX-XX" maxlength="16">
                         <span class="error" id="err-phone"></span>
                     </div>
 
@@ -56,24 +56,28 @@
                         <span class="error" id="err-email"></span>
                     </div>
 
-                    <!-- Дата заезда с календарём -->
+                    <!-- Дата заезда -->
                     <div class="form-group">
                         <label>Дата заезда *</label>
                         <div class="date-input-wrapper">
                             <input type="text" id="checkIn" name="checkIn" placeholder="ДД.ММ.ГГГГ" maxlength="10">
-                            <input type="date" id="checkInPicker" class="date-picker-hidden">
-                            <button type="button" class="calendar-btn" onclick="openPicker('checkInPicker')" title="Открыть календарь">📅</button>
+                            <div class="calendar-btn-wrapper">
+                                <input type="date" id="checkInPicker" class="calendar-overlay" tabindex="-1">
+                                <span class="calendar-icon">📅</span>
+                            </div>
                         </div>
                         <span class="error" id="err-checkIn"></span>
                     </div>
 
-                    <!-- Дата выезда с календарём -->
+                    <!-- Дата выезда -->
                     <div class="form-group">
                         <label>Дата выезда *</label>
                         <div class="date-input-wrapper">
                             <input type="text" id="checkOut" name="checkOut" placeholder="ДД.ММ.ГГГГ" maxlength="10">
-                            <input type="date" id="checkOutPicker" class="date-picker-hidden">
-                            <button type="button" class="calendar-btn" onclick="openPicker('checkOutPicker')" title="Открыть календарь">📅</button>
+                            <div class="calendar-btn-wrapper">
+                                <input type="date" id="checkOutPicker" class="calendar-overlay" tabindex="-1">
+                                <span class="calendar-icon">📅</span>
+                            </div>
                         </div>
                         <span class="error" id="err-checkOut"></span>
                     </div>
