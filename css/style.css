@@ -100,3 +100,35 @@ nav a:hover { color: #fbbf24; }
     nav a { margin: 0 10px; }
     .filter-form { flex-direction: column; }
 }
+/* Обёртка для даты с календарём */
+.date-input-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.date-input-wrapper input[type="text"] {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.date-picker-hidden {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+.calendar-btn {
+    padding: 10px 14px;
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s;
+}
+.calendar-btn:hover {
+    background: #1e3a8a;
+}
