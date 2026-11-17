@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование — Сладкие сны</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div>
+                <h1 class="logo">Сладкие сны</h1>
+                <p class="slogan">Ваш уют — наша забота</p>
+            </div>
+            <nav>
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="admin-login.html">Админ</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="booking">
+            <div class="container">
+                <h2>Бронирование номера</h2>
+
+                <!-- Сообщение об успехе/ошибке -->
+                <div id="message"></div>
+
+                <!-- Информация о номере -->
+                <div id="roomInfo" class="room-info"></div>
+
+                <!-- Форма -->
+                <form id="bookingForm" class="booking-form" novalidate>
+                    <input type="hidden" id="roomId" name="roomId">
+
+                    <div class="form-group">
+                        <label for="firstName">Имя *</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Иван">
+                        <span class="error" id="err-firstName"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Фамилия *</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Иванов">
+                        <span class="error" id="err-lastName"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Телефон * (+7(ХХХ)ХХХ-ХХ-ХХ)</label>
+                        <input type="text" id="phone" name="phone" placeholder="+7(999)123-45-67">
+                        <span class="error" id="err-phone"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail *</label>
+                        <input type="text" id="email" name="email" placeholder="example@mail.ru">
+                        <span class="error" id="err-email"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkIn">Дата заезда * (ДД.ММ.ГГГГ)</label>
+                        <input type="text" id="checkIn" name="checkIn" placeholder="17.11.2026">
+                        <span class="error" id="err-checkIn"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkOut">Дата выезда * (ДД.ММ.ГГГГ)</label>
+                        <input type="text" id="checkOut" name="checkOut" placeholder="20.11.2026">
+                        <span class="error" id="err-checkOut"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>📍 г. Москва, ул. Примерная, 15</p>
+            <p>🕐 Круглосуточно, 24/7</p>
+            <p>📞 +7 (495) 111-22-33</p>
+            <p>✉ info@sweetdreams.ru</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/booking.js"></script>
+</body>
+</html>
