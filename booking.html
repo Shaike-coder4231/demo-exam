@@ -57,30 +57,27 @@
                     </div>
 
                     <!-- Дата заезда -->
-                    <div class="form-group">
-                        <label>Дата заезда *</label>
-                        <div class="date-input-wrapper">
-                            <input type="text" id="checkIn" name="checkIn" placeholder="ДД.ММ.ГГГГ" maxlength="10">
-                            <div class="calendar-btn-wrapper">
-                                <input type="date" id="checkInPicker" class="calendar-overlay" tabindex="-1">
-                                <span class="calendar-icon">📅</span>
-                            </div>
-                        </div>
-                        <span class="error" id="err-checkIn"></span>
-                    </div>
+                    <!-- Дата заезда -->
+<div class="form-group">
+    <label>Дата заезда *</label>
+    <div class="date-wrapper">
+        <input type="text" id="checkIn" name="checkIn" placeholder="ДД.ММ.ГГГГ" maxlength="10">
+        <input type="date" id="checkInPicker" class="hidden-picker" tabindex="-1">
+        <span class="calendar-icon">📅</span>
+    </div>
+    <span class="error" id="err-checkIn"></span>
+</div>
 
-                    <!-- Дата выезда -->
-                    <div class="form-group">
-                        <label>Дата выезда *</label>
-                        <div class="date-input-wrapper">
-                            <input type="text" id="checkOut" name="checkOut" placeholder="ДД.ММ.ГГГГ" maxlength="10">
-                            <div class="calendar-btn-wrapper">
-                                <input type="date" id="checkOutPicker" class="calendar-overlay" tabindex="-1">
-                                <span class="calendar-icon">📅</span>
-                            </div>
-                        </div>
-                        <span class="error" id="err-checkOut"></span>
-                    </div>
+<!-- Дата выезда -->
+<div class="form-group">
+    <label>Дата выезда *</label>
+    <div class="date-wrapper">
+        <input type="text" id="checkOut" name="checkOut" placeholder="ДД.ММ.ГГГГ" maxlength="10">
+        <input type="date" id="checkOutPicker" class="hidden-picker" tabindex="-1">
+        <span class="calendar-icon">📅</span>
+    </div>
+    <span class="error" id="err-checkOut"></span>
+</div>
 
                     <button type="submit" class="btn btn-primary">Отправить заявку</button>
                 </form>
