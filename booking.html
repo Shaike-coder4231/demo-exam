@@ -26,13 +26,9 @@
             <div class="container">
                 <h2>Бронирование номера</h2>
 
-                <!-- Сообщение об успехе/ошибке -->
                 <div id="message"></div>
-
-                <!-- Информация о номере -->
                 <div id="roomInfo" class="room-info"></div>
 
-                <!-- Форма -->
                 <form id="bookingForm" class="booking-form" novalidate>
                     <input type="hidden" id="roomId" name="roomId">
 
@@ -49,8 +45,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Телефон * (+7(ХХХ)ХХХ-ХХ-ХХ)</label>
-                        <input type="text" id="phone" name="phone" placeholder="+7(999)123-45-67">
+                        <label for="phone">Телефон *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+7(XXX)XXX-XX-XX">
                         <span class="error" id="err-phone"></span>
                     </div>
 
@@ -60,15 +56,25 @@
                         <span class="error" id="err-email"></span>
                     </div>
 
+                    <!-- Дата заезда с календарём -->
                     <div class="form-group">
-                        <label for="checkIn">Дата заезда * (ДД.ММ.ГГГГ)</label>
-                        <input type="text" id="checkIn" name="checkIn" placeholder="17.11.2026">
+                        <label>Дата заезда *</label>
+                        <div class="date-input-wrapper">
+                            <input type="text" id="checkIn" name="checkIn" placeholder="ДД.ММ.ГГГГ" maxlength="10">
+                            <input type="date" id="checkInPicker" class="date-picker-hidden">
+                            <button type="button" class="calendar-btn" onclick="openPicker('checkInPicker')" title="Открыть календарь">📅</button>
+                        </div>
                         <span class="error" id="err-checkIn"></span>
                     </div>
 
+                    <!-- Дата выезда с календарём -->
                     <div class="form-group">
-                        <label for="checkOut">Дата выезда * (ДД.ММ.ГГГГ)</label>
-                        <input type="text" id="checkOut" name="checkOut" placeholder="20.11.2026">
+                        <label>Дата выезда *</label>
+                        <div class="date-input-wrapper">
+                            <input type="text" id="checkOut" name="checkOut" placeholder="ДД.ММ.ГГГГ" maxlength="10">
+                            <input type="date" id="checkOutPicker" class="date-picker-hidden">
+                            <button type="button" class="calendar-btn" onclick="openPicker('checkOutPicker')" title="Открыть календарь">📅</button>
+                        </div>
                         <span class="error" id="err-checkOut"></span>
                     </div>
 
