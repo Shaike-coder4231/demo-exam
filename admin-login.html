@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — Админ</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div>
+                <h1 class="logo">Сладкие сны</h1>
+                <p class="slogan">Ваш уют — наша забота</p>
+            </div>
+            <nav>
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="admin-login.html">Админ</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="login-section">
+            <div class="container">
+                <div class="login-box">
+                    <h2>Вход для администратора</h2>
+                    <div id="loginError" class="alert error" style="display:none;"></div>
+                    <form id="loginForm">
+                        <label>Логин
+                            <input type="text" id="login" placeholder="hotel123" required>
+                        </label>
+                        <label>Пароль
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </label>
+                        <button type="submit" class="btn btn-primary">Войти</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/data.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+
+            if (login === 'hotel123' && password === 'adminHotel') {
+                sessionStorage.setItem('admin_logged', 'true');
+                window.location.href = 'admin-panel.html';
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginError').textContent = 'Неверный логин или пароль';
+            }
+        });
+    </script>
+</body>
+</html>
